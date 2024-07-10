@@ -1,0 +1,156 @@
+package franchasieManagementSystem;
+import java.util.*;
+
+// Employee class
+class Employee {
+    private String name;
+    private String role;
+    private double salary;
+
+    public Employee(String name, String role, double salary) {
+        this.name = name;
+        this.role = role;
+        this.salary = salary;
+    }
+
+    // Getters
+    public String getName() {
+        return name;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "name='" + name + '\'' +
+                ", role='" + role + '\'' +
+                ", salary=" + salary +
+                '}';
+    }
+}
+
+// Inventory class
+class Inventory {
+    private Map<String, Integer> stock;
+
+    public Inventory() {
+        this.stock = new HashMap<>();
+    }
+
+    public void addStock(String product, int quantity) {
+        int currentQuantity = stock.getOrDefault(product, 0);
+        stock.put(product, currentQuantity + quantity);
+    }
+
+    public boolean removeStock(String product, int quantity) {
+        int currentQuantity = stock.getOrDefault(product, 0);
+        if (currentQuantity >= quantity) {
+            stock.put(product, currentQuantity - quantity);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean checkStock(String product, int quantity) {
+        int currentQuantity = stock.getOrDefault(product, 0);
+        return currentQuantity >= quantity;
+    }
+
+    @Override
+    public String toString() {
+        return "Inventory{" +
+                "stock=" + stock +
+                '}';
+    }
+}
+
+// Franchise class
+class Franchise {
+    private String franchiseName;
+    private List<Employee> employees;
+    private Inventory inventory;
+    private List<String> customers;
+
+    public Franchise(String franchiseName) {
+        this.franchiseName = franchiseName;
+        this.employees = new ArrayList<>();
+        this.inventory = new Inventory();
+        this.customers = new ArrayList<>();
+    }
+
+    public void hireEmployee(String name, String role, double salary) {
+        employees.add(new Employee(name, role, salary));
+    }
+
+    public void addStockToInventory(String product, int quantity) {
+        inventory.addStock(product, quantity);
+    }
+
+    public String sellProduct(String product, int quantity) {
+        if (inventory.checkStock(product, quantity)) {
+            inventory.removeStock(product, quantity);
+            return quantity + " units of " + product + " sold.";
+        } else {
+            return "Out of stock: " + product;
+        }
+    }
+
+    public void addCustomer(String customerName) {
+        customers.add(customerName);
+    }
+
+    public String getFranchiseName() {
+        return franchiseName;
+    }
+
+    @Override
+    public String toString() {
+        return "Franchise{" +
+                "franchiseName='" + franchiseName + '\'' +
+                ", employees=" + employees +
+                ", inventory=" + inventory +
+                ", customers=" + customers +
+                '}';
+    }
+}
+
+// Main class
+public class FranchiseManagementSystem {
+
+    public static void main(String[] args) {
+        // Create franchises
+        Franchise franchiseA = new Franchise("Franchise A");
+        Franchise franchiseB = new Franchise("Franchise B");
+
+        // Hire employees
+        franchiseA.hireEmployee("John Doe", "Manager", 50000);
+        franchiseA.hireEmployee("Jane Smith", "Sales Associate", 30000);
+        franchiseB.hireEmployee("Mike Johnson", "Manager", 55000);
+
+        // Add stock to inventory
+        franchiseA.addStockToInventory("Product A", 100);
+        franchiseA.addStockToInventory("Product B", 50);
+        franchiseB.addStockToInventory("Product C", 75);
+
+        // Sell products
+        System.out.println(franchiseA.sellProduct("Product A", 20));
+        System.out.println(franchiseA.sellProduct("Product B", 10));
+        System.out.println(franchiseA.sellProduct("Product C", 5)); // Should show out of stock
+
+        // Add customers
+        franchiseA.addCustomer("Customer 1");
+        franchiseA.addCustomer("Customer 2");
+
+        // Print franchise details
+        System.out.println(franchiseA);
+        System.out.println(franchiseB);
+    }
+}
